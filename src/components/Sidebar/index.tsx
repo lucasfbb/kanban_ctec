@@ -1,22 +1,22 @@
 import {
-    IoAppsOutline,
-    IoGridOutline,
-    IoHomeOutline,
-    IoLogOutOutline,
-    IoNewspaperOutline,
-    IoNotificationsOutline,
-    IoPeopleOutline,
-    IoPieChartOutline,
-  } from 'react-icons/io5';
+	AppsOutline,
+	GridOutline,
+	HomeOutline,
+	LogOutOutline,
+	NewspaperOutline,
+	NotificationsOutline,
+	PeopleOutline,
+	PieChartOutline,
+} from "react-ionicons";
 
-import logo from '../../assets/images/logo_pgm_inverter.png'; // ajuste o nome e extensão corretamente
+import logo from '../../assets/images/logo_pgm_inverter.png';
 
 const Sidebar = () => {
 	const navLinks = [
 		{
-			title: "Home",
+			title: "Início",
 			icon: (
-				<IoHomeOutline
+				<HomeOutline
 					color="#555"
 					width="22px"
 					height="22px"
@@ -25,9 +25,9 @@ const Sidebar = () => {
 			active: false,
 		},
 		{
-			title: "Boards",
+			title: "KanBans",
 			icon: (
-				<IoAppsOutline
+				<AppsOutline
 					color="#555"
 					width="22px"
 					height="22px"
@@ -36,9 +36,9 @@ const Sidebar = () => {
 			active: true,
 		},
 		{
-			title: "Projects",
+			title: "Projetos",
 			icon: (
-				<IoGridOutline
+				<GridOutline
 					color="#555"
 					width="22px"
 					height="22px"
@@ -47,9 +47,9 @@ const Sidebar = () => {
 			active: false,
 		},
 		{
-			title: "Analytics",
+			title: "Análises",
 			icon: (
-				<IoPieChartOutline
+				<PieChartOutline
 					color="#555"
 					width="22px"
 					height="22px"
@@ -58,9 +58,9 @@ const Sidebar = () => {
 			active: false,
 		},
 		{
-			title: "Workflows",
+			title: "Fluxos de trabalho",
 			icon: (
-				<IoPeopleOutline
+				<PeopleOutline
 					color="#555"
 					width="22px"
 					height="22px"
@@ -69,27 +69,16 @@ const Sidebar = () => {
 			active: false,
 		},
 		{
-			title: "Notifications",
+			title: "Notficações",
 			icon: (
-				<IoNotificationsOutline
+				<NotificationsOutline
 					color="#555"
 					width="22px"
 					height="22px"
 				/>
 			),
 			active: false,
-		},
-		{
-			title: "Newsletter",
-			icon: (
-				<IoNewspaperOutline
-					color="#555"
-					width="22px"
-					height="22px"
-				/>
-			),
-			active: false,
-		},
+		}
 	];
 	return (
 		<div className="fixed left-0 top-0 md:w-[230px] w-[60px] overflow-hidden h-full flex flex-col">
@@ -115,8 +104,8 @@ const Sidebar = () => {
 					);
 				})}
 				<div className="flex absolute bottom-4 items-center md:justify-start justify-center gap-2 md:w-[90%] w-[70%] rounded-lg hover:bg-orange-300 px-2 py-3 cursor-pointer bg-gray-200">
-					<IoLogOutOutline />
-					<span className="font-medium text-[15px] md:block hidden">Log Out</span>
+					<LogOutOutline />
+					<span className="font-medium text-[15px] md:block hidden">Sair</span>
 				</div>
 			</div>
 		</div>

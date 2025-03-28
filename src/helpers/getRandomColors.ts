@@ -1,6 +1,6 @@
 interface Color {
-    bg:string
-    text:string
+	bg: string;
+	text: string;
 }
 
 const colors: { [key: string]: Color } = {
@@ -14,8 +14,8 @@ const colors: { [key: string]: Color } = {
 	amber: { bg: "#fef3c7", text: "#d97706" },
 };
 
-export const getRandomColors = ():Color => {
-    const keys = Object.keys(colors)
-    const randomKey = keys[Math.floor(Math.random() * keys.length)]
-    return colors[randomKey]
-}
+export const getRandomColors = (): Color => {
+	const keys = Object.keys(colors);
+	const randomKey = keys[Math.floor(Math.random() * keys.length)];
+	return colors[randomKey];
+};

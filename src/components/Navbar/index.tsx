@@ -1,33 +1,32 @@
 import {
-	IoChevronDown,
-	IoNotificationsOutline,
-	IoPersonCircle,
-	IoSearchOutline,
-	IoSettingsOutline,
-	IoShareSocialOutline,
-} from "react-icons/io5";
+	ChevronDown,
+	NotificationsOutline,
+	PersonCircle,
+	SearchOutline,
+	SettingsOutline,
+	ShareSocialOutline,
+} from "react-ionicons";
 
 const Navbar = () => {
 	return (
 		<div className="md:w-[calc(100%-230px)] w-[calc(100%-60px)] fixed flex items-center justify-between pl-2 pr-6 h-[70px] top-0 md:left-[230px] left-[60px] border-b border-slate-300 bg-[#fff]">
 			<div className="flex items-center gap-3 cursor-pointer">
-                
-				<IoPersonCircle
+				<PersonCircle
 					color="#fb923c"
 					width={"28px"}
 					height={"28px"}
 				/>
 				<span className="text-orange-400 font-semibold md:text-lg text-sm whitespace-nowrap">
-					Board Name
+					NOME KANBAN
 				</span>
-				<IoChevronDown
+				<ChevronDown
 					color="#fb923c"
 					width={"16px"}
 					height={"16px"}
 				/>
 			</div>
 			<div className="md:w-[800px] w-[130px] bg-gray-100 rounded-lg px-3 py-[10px] flex items-center gap-2">
-				<IoSearchOutline color={"#999"} />
+				<SearchOutline color={"#999"} />
 				<input
 					type="text"
 					placeholder="Pesquisar"
@@ -36,13 +35,13 @@ const Navbar = () => {
 			</div>
 			<div className="md:flex hidden items-center gap-4">
 				<div className="grid place-items-center bg-gray-100 rounded-full p-2 cursor-pointer">
-					<IoShareSocialOutline color={"#444"} />
+					<ShareSocialOutline color={"#444"} />
 				</div>
 				<div className="grid place-items-center bg-gray-100 rounded-full p-2 cursor-pointer">
-					<IoSettingsOutline color={"#444"} />
+					<SettingsOutline color={"#444"} />
 				</div>
 				<div className="grid place-items-center bg-gray-100 rounded-full p-2 cursor-pointer">
-					<IoNotificationsOutline color={"#444"} />
+					<NotificationsOutline color={"#444"} />
 				</div>
 			</div>
 		</div>
