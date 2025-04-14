@@ -8,10 +8,17 @@ import { AddOutline } from "react-ionicons";
 import AddModal from "../../components/Modals/AddModal";
 import Task from "../../components/Task";
 
+interface Board {
+	id: number;
+	title: string;
+}
+
 const Home = () => {
 	const [columns, setColumns] = useState<Columns>(Board);
 	const [modalOpen, setModalOpen] = useState(false);
 	const [selectedColumn, setSelectedColumn] = useState("");
+
+	const [boards, setBoards] = useState<Board[]>([]);
 
 	const openModal = (columnId: any) => {
 		setSelectedColumn(columnId);
