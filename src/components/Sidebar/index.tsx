@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 import {
 	AppsOutline,
 	GridOutline,
@@ -12,6 +14,14 @@ import {
 import logo from '../../assets/images/logo_pgm_inverter.png';
 
 const Sidebar = () => {
+
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		localStorage.removeItem("token"); // ou o nome que você usou
+		navigate("/"); // redireciona para login
+	};
+
 	const navLinks = [
 		{
 			title: "Início",
@@ -103,7 +113,7 @@ const Sidebar = () => {
 						</div>
 					);
 				})}
-				<div className="flex absolute bottom-4 items-center md:justify-start justify-center gap-2 md:w-[90%] w-[70%] rounded-lg hover:bg-orange-300 px-2 py-3 cursor-pointer bg-gray-200">
+				<div onClick={handleLogout} className="flex absolute bottom-4 items-center md:justify-start justify-center gap-2 md:w-[90%] w-[70%] rounded-lg hover:bg-orange-300 px-2 py-3 cursor-pointer bg-gray-200">
 					<LogOutOutline />
 					<span className="font-medium text-[15px] md:block hidden">Sair</span>
 				</div>

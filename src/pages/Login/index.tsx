@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/images/riodejaneiro.jpg';
+import { EyeOutline, EyeOffOutline } from 'react-ionicons';
 import { useState } from 'react';
 import api from '../../services/api';
 
@@ -8,6 +9,7 @@ const Login = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
   const handleLogin = async () => {
@@ -20,12 +22,11 @@ const Login = () => {
     }
   };
 
-  const handleRegister = async () => {
+  const handlePageRegister = async () => {
     try {
-      await api.post('/register', { username, password });
-      alert('Usuário registrado com sucesso! Faça login.');
+      navigate('/register')
     } catch (error) {
-      alert('Erro ao registrar usuário.');
+      alert('Erro');
       console.error(error);
     }
   };
@@ -43,16 +44,31 @@ const Login = () => {
           placeholder="Usuário"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
           className="px-4 py-2 rounded-lg w-64 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder-white text-white" 
         />
 
-        <input
-          type="password"
-          placeholder="Senha"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="px-4 py-2 rounded-lg w-64 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder-white text-white"
-        />
+        <div className="relative w-64">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Senha"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+            className="px-4 py-2 pr-10 rounded-lg w-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder-white text-white bg-transparent"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white cursor-pointer"
+          >
+            {showPassword ? (
+              <EyeOffOutline color={"#fff"} width="20px" height="20px" />
+            ) : (
+              <EyeOutline color={"#fff"} width="20px" height="20px" />
+            )}
+          </button>
+        </div>
         {/* <div className="flex gap-4"> */}
           <button
             onClick={handleLogin}
@@ -62,7 +78,7 @@ const Login = () => {
           </button>
 
           <button
-            onClick={handleRegister}
+            onClick={handlePageRegister}
             className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition shadow-md"
           >
             Registrar
