@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/images/riodejaneiro.jpg';
 import { EyeOutline, EyeOffOutline } from 'react-ionicons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import api from '../../services/api';
+import Swal from 'sweetalert2';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Login = () => {
       localStorage.setItem('token', response.data.access_token);
       navigate('/app');
     } catch (err) {
+      Swal.fire("Erro", "Usuário ou senha inválidos", "error");
       setError('Usuário ou senha inválidos.');
     }
   };

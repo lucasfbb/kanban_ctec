@@ -3,6 +3,7 @@ import Layout from "../layout";
 import Boards from "../pages/Boards";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import Inicio from "../pages/Inicio";
 
 const routes: RouteObject[] = [
 	{
@@ -18,6 +19,7 @@ const routes: RouteObject[] = [
 	  element: <Layout />,
 	  children: [
 		{ path: "", element: <Boards /> },
+		{ path: "inicio", element: <Inicio /> },
 	  ],
 	},
   ];

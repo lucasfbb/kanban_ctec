@@ -25,7 +25,7 @@ const Task = ({ task, provided }: TaskProps) => {
 				/>
 			)}
 			<div className="flex items-center gap-2">
-				{tags.map((tag) => (
+				{tags?.map((tag) => (
 					<span
 						key={tag.title}
 						className="px-[10px] py-[2px] text-[13px] font-medium rounded-md"

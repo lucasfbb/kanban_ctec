@@ -7,7 +7,7 @@ import { getRandomColors } from "../helpers/getRandomColors";
 
 export const Board: Columns = {
 	backlog: {
-		name: "Backlog",
+		name: "Pendências",
 		items: [
 			{
 				id: uuidv4(),
@@ -36,7 +36,7 @@ export const Board: Columns = {
 		],
 	},
 	pending: {
-		name: "Pending",
+		name: "Em andamento",
 		items: [
 			{
 				id: uuidv4(),
@@ -65,7 +65,7 @@ export const Board: Columns = {
 		],
 	},
 	todo: {
-		name: "To Do",
+		name: "A fazer",
 		items: [
 			{
 				id: uuidv4(),
@@ -83,7 +83,7 @@ export const Board: Columns = {
 		],
 	},
 	doing: {
-		name: "Doing",
+		name: "Fazendo",
 		items: [
 			{
 				id: uuidv4(),
@@ -110,7 +110,7 @@ export const Board: Columns = {
 		],
 	},
 	done: {
-		name: "Done",
+		name: "Feito",
 		items: [
 			{
 				id: uuidv4(),

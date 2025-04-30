@@ -5,6 +5,7 @@ from app.db.session import Base, engine
 from app.models.board import Board
 from app.models.user import User
 from app.models.task import Task
+from app.models.tag import Tag
 from app.db.session import Base, engine
 
 app = FastAPI()

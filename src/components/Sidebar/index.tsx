@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import {
 	AppsOutline,
@@ -15,6 +15,7 @@ import logo from '../../assets/images/logo_pgm_inverter.png';
 
 const Sidebar = () => {
 
+	const location = useLocation();
 	const navigate = useNavigate();
 
 	const handleLogout = () => {
@@ -25,71 +26,36 @@ const Sidebar = () => {
 	const navLinks = [
 		{
 			title: "Início",
-			icon: (
-				<HomeOutline
-					color="#555"
-					width="22px"
-					height="22px"
-				/>
-			),
-			active: false,
+			path: "/app/inicio",
+			icon: <HomeOutline color="#555" width="22px" height="22px" />,
 		},
 		{
 			title: "KanBans",
-			icon: (
-				<AppsOutline
-					color="#555"
-					width="22px"
-					height="22px"
-				/>
-			),
-			active: true,
+			path: "/app",
+			icon: <AppsOutline color="#555" width="22px" height="22px" />,
 		},
 		{
 			title: "Projetos",
-			icon: (
-				<GridOutline
-					color="#555"
-					width="22px"
-					height="22px"
-				/>
-			),
-			active: false,
+			path: "/projetos",
+			icon: <GridOutline color="#555" width="22px" height="22px" />,
 		},
 		{
 			title: "Análises",
-			icon: (
-				<PieChartOutline
-					color="#555"
-					width="22px"
-					height="22px"
-				/>
-			),
-			active: false,
+			path: "/analises",
+			icon: <PieChartOutline color="#555" width="22px" height="22px" />,
 		},
 		{
 			title: "Fluxos de trabalho",
-			icon: (
-				<PeopleOutline
-					color="#555"
-					width="22px"
-					height="22px"
-				/>
-			),
-			active: false,
+			path: "/fluxos",
+			icon: <PeopleOutline color="#555" width="22px" height="22px" />,
 		},
 		{
-			title: "Notficações",
-			icon: (
-				<NotificationsOutline
-					color="#555"
-					width="22px"
-					height="22px"
-				/>
-			),
-			active: false,
-		}
+			title: "Notificações",
+			path: "/notificacoes",
+			icon: <NotificationsOutline color="#555" width="22px" height="22px" />,
+		},
 	];
+
 	return (
 		<div className="fixed left-0 top-0 md:w-[230px] w-[60px] overflow-hidden h-full flex flex-col">
 			<div className="w-full flex items-center md:justify-start justify-center md:pl-5 h-[70px] bg-[#fff]">
@@ -101,11 +67,13 @@ const Sidebar = () => {
 			</div>
 			<div className="w-full h-[calc(100vh-70px)] border-r flex flex-col md:items-start items-center gap-2 border-slate-300 bg-[#fff] py-5 md:px-3 px-3 relative">
 				{navLinks.map((link) => {
+					const isActive = location.pathname === link.path;
 					return (
 						<div
 							key={link.title}
+							onClick={() => navigate(link.path)}
 							className={`flex items-center gap-2 w-full rounded-lg hover:bg-orange-300 px-2 py-3 cursor-pointer ${
-								link.active ? "bg-orange-300" : "bg-transparent"
+							isActive ? "bg-orange-300" : "bg-transparent"
 							}`}
 						>
 							{link.icon}

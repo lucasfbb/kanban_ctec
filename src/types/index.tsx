@@ -17,3 +17,8 @@ type Column = {
 export type Columns = {
 	[key: string]: Column;
 };
+
+export interface BoardInterface {
+	id: number;
+	title: string;
+}
