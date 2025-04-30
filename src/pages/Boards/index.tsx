@@ -142,14 +142,14 @@ const Home = () => {
         </div>
       </DragDropContext>
 
-	  {/* <div className="flex justify-end px-5 pt-4">
+	  <div className="flex justify-end px-5 pt-4">
 		<button
 		onClick={handleSaveBoard}
 		className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition shadow-md"
 		>
 		Salvar alterações
 		</button>
-  	  </div> */}
+  	  </div>
 
       <AddModal
         isOpen={modalOpen}

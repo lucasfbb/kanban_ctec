@@ -1,37 +1,40 @@
 export const onDragEnd = (result: any, columns: any, dispatch: any) => {
+	if (!result.destination) return;
+  
 	const { source, destination } = result;
   
-	if (!destination) return;
-  
 	if (source.droppableId !== destination.droppableId) {
-	  const sourceCol = columns[source.droppableId];
-	  const destCol = columns[destination.droppableId];
-  
-	  const sourceItems = [...sourceCol.items];
-	  const destItems = [...destCol.items];
-  
+	  const sourceColumn = columns[source.droppableId];
+	  const destColumn = columns[destination.droppableId];
+	  const sourceItems = [...sourceColumn.items];
+	  const destItems = [...destColumn.items];
 	  const [movedItem] = sourceItems.splice(source.index, 1);
-	  destItems.splice(destination.index, 0, movedItem);
   
-	  dispatch({
-		type: "MOVE_TASK",
-		payload: {
-		  sourceId: source.droppableId,
-		  destId: destination.droppableId,
-		  sourceItems,
-		  destItems,
-		},
-	  });
-	} else {
-	  const column = columns[source.droppableId];
-	  const items = [...column.items];
-	  const [movedItem] = items.splice(source.index, 1);
-	  items.splice(destination.index, 0, movedItem);
+	  movedItem.status = destination.droppableId; // <-- atualiza status da task
+  
+	  destItems.splice(destination.index, 0, movedItem);
   
 	  dispatch({
 		type: "UPDATE_COLUMN",
 		columnId: source.droppableId,
-		items,
+		items: sourceItems,
+	  });
+  
+	  dispatch({
+		type: "UPDATE_COLUMN",
+		columnId: destination.droppableId,
+		items: destItems,
+	  });
+	} else {
+	  const column = columns[source.droppableId];
+	  const copiedItems = [...column.items];
+	  const [movedItem] = copiedItems.splice(source.index, 1);
+	  copiedItems.splice(destination.index, 0, movedItem);
+  
+	  dispatch({
+		type: "UPDATE_COLUMN",
+		columnId: source.droppableId,
+		items: copiedItems,
 	  });
 	}
   };

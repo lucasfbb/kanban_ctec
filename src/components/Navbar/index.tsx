@@ -8,13 +8,17 @@ import {
 	ShareSocialOutline,
 } from "react-ionicons";
 
+import BoardSelector from "../BoardSelector";
+import { BoardInterface } from "../../types";
+
 interface NavbarProps {
-	boards: { id: number; title: string }[];
+	boards: BoardInterface[];
 	selectedBoardId: number | null;
-	onSelectBoard: (id: number) => void;
+	selectedBoardTitle: string;
+	onSelectBoard: (id: number, title: string) => void;
 }
 
-const Navbar = ({ boards, selectedBoardId, onSelectBoard }: NavbarProps) => {
+const Navbar = ({ boards, selectedBoardId, selectedBoardTitle, onSelectBoard }: NavbarProps) => {
 	return (
 		<div className="md:w-[calc(100%-230px)] w-[calc(100%-60px)] fixed flex items-center justify-between pl-2 pr-6 h-[70px] top-0 md:left-[230px] left-[60px] border-b border-slate-300 bg-[#fff]">
 			<div className="flex items-center gap-3 cursor-pointer">
@@ -24,13 +28,17 @@ const Navbar = ({ boards, selectedBoardId, onSelectBoard }: NavbarProps) => {
 					height={"28px"}
 				/>
 				<select
-					value={selectedBoardId || ''}
-					onChange={(e) => onSelectBoard?.(Number(e.target.value))} // safe call
-					className="cursor-pointer"
-				>
+					value={selectedBoardId !== null ? selectedBoardId.toString() : ''}
+					onChange={(e) => {
+						const id = Number(e.target.value);
+						const title = boards.find(b => b.id === id)?.title || '';
+						onSelectBoard(id, title);
+					}}
+					className="cursor-pointer bg-transparent outline-none text-orange-400 font-semibold text-lg"
+					>
 					<option value="" disabled>Selecionar Board</option>
-					{boards?.map((board) => (
-						<option key={board.id} value={board.id} className="text-black cursor-pointer">
+					{boards.map(board => (
+						<option key={board.id} value={board.id.toString()} className="text-black">
 						{board.title}
 						</option>
 					))}
