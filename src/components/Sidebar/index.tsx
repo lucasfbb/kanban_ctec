@@ -31,7 +31,7 @@ const Sidebar = () => {
 		},
 		{
 			title: "KanBans",
-			path: "/app",
+			path: "/app/kanban",
 			icon: <AppsOutline color="#555" width="22px" height="22px" />,
 		},
 		{

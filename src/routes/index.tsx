@@ -1,9 +1,10 @@
-import { RouteObject } from "react-router";
+import { Navigate, RouteObject } from "react-router";
 import Layout from "../layout";
 import Boards from "../pages/Boards";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Inicio from "../pages/Inicio";
+import Kanban from "../pages/Kanban";
 
 const routes: RouteObject[] = [
 	{
@@ -18,8 +19,10 @@ const routes: RouteObject[] = [
 	  path: "/app",
 	  element: <Layout />,
 	  children: [
-		{ path: "", element: <Boards /> },
+		{ path: "", element: <Navigate to="/app/inicio" /> },
 		{ path: "inicio", element: <Inicio /> },
+		{ path: "kanban", element: <Kanban /> },            // rota sem ID
+    	{ path: "kanban/:id", element: <Boards /> }, 
 	  ],
 	},
   ];
