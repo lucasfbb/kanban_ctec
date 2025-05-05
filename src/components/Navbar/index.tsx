@@ -8,8 +8,6 @@ import {
 	ShareSocialOutline,
 } from "react-ionicons";
 import { useNavigate } from "react-router-dom";
-import BoardSelector from "../BoardSelector";
-import { BoardInterface } from "../../types";
 
 const Navbar = () => {
 
