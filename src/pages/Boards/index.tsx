@@ -31,36 +31,36 @@ const Home = () => {
   };
 
   const handleSaveBoard = async () => {
-	const token = localStorage.getItem("token");
-	const boardId = localStorage.getItem("selectedBoardId");
-  
-	if (!token || !boardId) return;
-  
-	try {
-	  const payload = Object.entries(columns).reduce((acc, [key, value]) => {
-		acc[key] = {
-		  name: value.name,
-		  items: value.items.map((item: any) => ({
-			title: item.title,
-			description: item.description,
-			deadline: item.deadline,
-			priority: item.priority,
-			status: key,
-		  })),
-		};
-		return acc;
-	  }, {} as any);
-  
-	  await api.put(`/boards/${boardId}/save`, payload, {
-		headers: {
-		  Authorization: `Bearer ${token}`,
-		},
-	  });
-  
-	  console.log("Board salvo com sucesso");
-	} catch (err) {
-	  console.error("Erro ao salvar board:", err);
-	}
+    const token = localStorage.getItem("token");
+    const boardId = localStorage.getItem("selectedBoardId");
+    
+    if (!token || !boardId) return;
+    
+    try {
+      const payload = Object.entries(columns).reduce((acc, [key, value]) => {
+      acc[key] = {
+        name: value.name,
+        items: value.items.map((item: any) => ({
+        title: item.title,
+        description: item.description,
+        deadline: item.deadline,
+        priority: item.priority,
+        status: key,
+        })),
+      };
+      return acc;
+      }, {} as any);
+    
+      await api.put(`/boards/${boardId}/save`, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      });
+    
+      console.log("Board salvo com sucesso");
+    } catch (err) {
+      console.error("Erro ao salvar board:", err);
+    }
   };
 
   // useEffect para buscar o board atual ao montar
@@ -84,23 +84,23 @@ const Home = () => {
 
   // useEffect para salvar automaticamente a cada 10 minutos
   useEffect(() => {
-	const interval = setInterval(() => {
-	  handleSaveBoard();
-	}, 10 * 60 * 1000); // 10 minutos
-  
-	return () => clearInterval(interval); // limpa ao desmontar
+    const interval = setInterval(() => {
+      handleSaveBoard();
+    }, 10 * 60 * 1000); // 10 minutos
+    
+    return () => clearInterval(interval); // limpa ao desmontar
   }, [columns]);
 
   // useEffect para salvar ao sair da tela
   useEffect(() => {
-	const handleBeforeUnload = () => {
-	  handleSaveBoard();
-	};
-  
-	window.addEventListener("beforeunload", handleBeforeUnload);
-	return () => {
-	  window.removeEventListener("beforeunload", handleBeforeUnload);
-	};
+    const handleBeforeUnload = () => {
+      handleSaveBoard();
+    };
+    
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, [columns]);
 
   return (

@@ -8,25 +8,9 @@ from app.models.board import Board
 from app.models.task import Task
 from app.models.user import User
 from app.schemas.board import BoardCreate, BoardOut
+from app.routes.utils import get_current_user, get_db
 
 router = APIRouter()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
-    payload = decode_access_token(token)
-    if not payload:
-        raise HTTPException(status_code=401, detail="Token inválido")
-    user = db.query(User).filter(User.username == payload.get("sub")).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="Usuário não encontrado")
-    return user
 
 @router.get("/boards", response_model=list[BoardOut])
 def list_boards(db: Session = Depends(get_db), user: User = Depends(get_current_user)):

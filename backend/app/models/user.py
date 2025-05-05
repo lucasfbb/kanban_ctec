@@ -9,5 +9,6 @@ class User(Base):
     username = Column(String(50), unique=True, index=True)
     password = Column(String(255))
     cargo = Column(String(50))
+    foto = Column(String(50), nullable=True)
 
     boards = relationship("Board", back_populates="owner")

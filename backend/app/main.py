@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import auth, boards
+from fastapi.staticfiles import StaticFiles
+from app.routes import auth, boards, utils, profile
 from app.db.session import Base, engine
 from app.models.board import Board
 from app.models.user import User
@@ -19,9 +20,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Serve os arquivos estáticos da pasta uploads
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 # Criação das tabelas
 Base.metadata.create_all(bind=engine)
 
 # Rotas
 app.include_router(auth.router)
 app.include_router(boards.router)
+app.include_router(profile.router)
+
+
+
