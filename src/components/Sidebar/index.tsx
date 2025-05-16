@@ -1,15 +1,15 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 
 import {
-	AppsOutline,
-	GridOutline,
-	HomeOutline,
-	LogOutOutline,
-	NewspaperOutline,
-	NotificationsOutline,
-	PeopleOutline,
-	PieChartOutline,
-} from "react-ionicons";
+	IoAppsOutline,
+	IoGridOutline,
+	IoHomeOutline,
+	IoLogOutOutline,
+	IoNewspaperOutline,
+	IoNotificationsOutline,
+	IoPeopleOutline,
+	IoPieChartOutline,
+  } from "react-icons/io5";
 
 import logo from '../../assets/images/logo_pgm_inverter.png';
 
@@ -27,32 +27,32 @@ const Sidebar = () => {
 		{
 			title: "Início",
 			path: "/app/inicio",
-			icon: <HomeOutline color="#555" width="22px" height="22px" />,
+			icon: <IoHomeOutline color="#555" width="22px" height="22px" />,
 		},
 		{
 			title: "KanBans",
 			path: "/app/kanban",
-			icon: <AppsOutline color="#555" width="22px" height="22px" />,
+			icon: <IoAppsOutline color="#555" width="22px" height="22px" />,
 		},
 		{
 			title: "Projetos",
 			path: "/app/projetos",
-			icon: <GridOutline color="#555" width="22px" height="22px" />,
+			icon: <IoGridOutline color="#555" width="22px" height="22px" />,
 		},
 		{
 			title: "Análises",
 			path: "/analises",
-			icon: <PieChartOutline color="#555" width="22px" height="22px" />,
+			icon: <IoPieChartOutline color="#555" width="22px" height="22px" />,
 		},
 		{
 			title: "Fluxos de trabalho",
 			path: "/fluxos",
-			icon: <PeopleOutline color="#555" width="22px" height="22px" />,
+			icon: <IoPeopleOutline color="#555" width="22px" height="22px" />,
 		},
 		{
 			title: "Notificações",
 			path: "/notificacoes",
-			icon: <NotificationsOutline color="#555" width="22px" height="22px" />,
+			icon: <IoNotificationsOutline color="#555" width="22px" height="22px" />,
 		},
 	];
 
@@ -82,7 +82,7 @@ const Sidebar = () => {
 					);
 				})}
 				<div onClick={handleLogout} className="flex absolute bottom-4 items-center md:justify-start justify-center gap-2 md:w-[90%] w-[70%] rounded-lg hover:bg-orange-300 px-2 py-3 cursor-pointer bg-gray-200">
-					<LogOutOutline />
+					<IoLogOutOutline />
 					<span className="font-medium text-[15px] md:block hidden">Sair</span>
 				</div>
 			</div>

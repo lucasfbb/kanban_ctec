@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from app.routes.utils import get_current_user, get_db
 from app.models.user import User
+from app.schemas.user import UserCreate, UserOut
 import shutil
 import os
 from uuid import uuid4
@@ -33,9 +34,11 @@ async def upload_foto(
         "url": f"http://localhost:8000/{relative_path}"
     })
 
-@router.put("/users/update")
-def update_user(data: dict, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    user.username = data.get("nome", user.username)
-    user.username = data.get("username", user.username)
+@router.put("/users/update", response_model=UserOut)
+def update_profile(data: UserCreate, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    user.username = data.username
+    user.cargo = data.cargo
+    user.foto = data.foto
     db.commit()
-    return {"message": "Perfil atualizado com sucesso"}
+    db.refresh(user)
+    return user

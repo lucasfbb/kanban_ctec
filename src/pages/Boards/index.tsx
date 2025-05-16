@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useParams } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
 import { onDragEnd } from "../../helpers/onDragEnd";
-import { AddOutline } from "react-ionicons";
+import { IoAddOutline } from "react-icons/io5";
 import AddModal from "../../components/Modals/AddModal";
 import Task from "../../components/Task";
 import api from "../../services/api";
@@ -12,6 +13,9 @@ const Home = () => {
   const { state: columns, dispatch } = useBoard();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState("");
+  const [title, setTitle] = useState("");
+
+  const { id } = useParams();
 
   const openModal = (columnId: string) => {
     setSelectedColumn(columnId);
@@ -26,7 +30,10 @@ const Home = () => {
     dispatch({
       type: "UPDATE_COLUMN",
       columnId: selectedColumn,
-      items: [...columns[selectedColumn].items, taskData],
+      items: [...columns[selectedColumn].items, {
+        ...taskData,
+        assignees: taskData.assignees || []
+      }],
     });
   };
 
@@ -41,20 +48,21 @@ const Home = () => {
       acc[key] = {
         name: value.name,
         items: value.items.map((item: any) => ({
-        title: item.title,
-        description: item.description,
-        deadline: item.deadline,
-        priority: item.priority,
-        status: key,
+          title: item.title,
+          description: item.description,
+          deadline: item.deadline,
+          priority: item.priority,
+          status: key,
+          assignees: item.assignees ? item.assignees.map((u: any) => u.id) : [],
         })),
       };
       return acc;
       }, {} as any);
     
       await api.put(`/boards/${boardId}/save`, payload, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
     
       console.log("Board salvo com sucesso");
@@ -65,22 +73,23 @@ const Home = () => {
 
   // useEffect para buscar o board atual ao montar
   useEffect(() => {
-    const boardId = localStorage.getItem("selectedBoardId");
     const token = localStorage.getItem("token");
-
-    if (!boardId || !token) return;
-
+  
+    if (!id || !token) return;
+  
     api
-      .get(`/boards/${boardId}`, {
+      .get(`/boards/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((res) => {
-        dispatch({ type: "SET_COLUMNS", payload: res.data });
+        console.log(res)
+        dispatch({ type: "SET_COLUMNS", payload: res.data.columns });
+        setTitle(res.data.board_title);
       })
       .catch((err) => console.error("Erro ao buscar board:", err));
-  }, [dispatch]);
+  }, [id, dispatch]);
 
   // useEffect para salvar automaticamente a cada 10 minutos
   useEffect(() => {
@@ -134,7 +143,7 @@ const Home = () => {
                 onClick={() => openModal(columnId)}
                 className="flex cursor-pointer items-center justify-center gap-1 py-[10px] md:w-[90%] w-full opacity-90 bg-white rounded-lg shadow-sm text-[#555] font-medium text-[15px]"
               >
-                <AddOutline color={"#555"} />
+                <IoAddOutline color={"#555"} />
                 Add Task
               </div>
             </div>
@@ -144,8 +153,8 @@ const Home = () => {
 
 	  <div className="flex justify-end px-5 pt-4">
 		<button
-		onClick={handleSaveBoard}
-		className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition shadow-md"
+      onClick={handleSaveBoard}
+      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition shadow-md"
 		>
 		Salvar alterações
 		</button>

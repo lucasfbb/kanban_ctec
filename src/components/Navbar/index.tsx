@@ -1,32 +1,59 @@
+import { useEffect, useState } from "react";
 import {
-	ChevronDown,
-	NotificationsOutline,
-	PersonCircle,
-	PersonOutline,
-	SearchOutline,
-	SettingsOutline,
-	ShareSocialOutline,
-} from "react-ionicons";
-import { useNavigate } from "react-router-dom";
+	IoChevronDown,
+	IoNotificationsOutline,
+	IoPersonCircle,
+	IoPersonOutline,
+	IoSearchOutline,
+	IoSettingsOutline,
+	IoShareSocialOutline,
+} from "react-icons/io5";
+
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import api from "../../services/api";
 
 const Navbar = () => {
+	const [title, setTitle] = useState("");
 
+	const { id } = useParams();
+	const location = useLocation();
+	
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		const isKanbanBoard = /^\/app\/kanban\/[^/]+$/.test(location.pathname);
+		const token = localStorage.getItem("token");
+	
+		if (isKanbanBoard && id && token) {
+		  api
+			.get(`/boards/${id}`, {
+			  headers: {
+				Authorization: `Bearer ${token}`,
+			  },
+			})
+			.then((res) => {
+			  setTitle(res.data.board_title);
+			})
+			.catch((err) => console.error("Erro ao buscar board:", err));
+		} else {
+		  setTitle("");
+		}
+	  }, [location.pathname, id]);
 
 	return (
 		<div className="md:w-[calc(100%-230px)] w-[calc(100%-60px)] fixed flex items-center justify-between pl-2 pr-6 h-[70px] top-0 md:left-[230px] left-[60px] border-b border-slate-300 bg-[#fff]">
 			<div className="flex items-center gap-3 cursor-pointer">
-				<PersonCircle
+				<IoPersonCircle
 					color="#fb923c"
 					width={"28px"}
 					height={"28px"}
 				/>
 
-				<h2 className="cursor-pointer bg-transparent outline-none text-orange-400 font-semibold text-lg">BOARD</h2>
+				<h2 className="cursor-pointer bg-transparent outline-none text-orange-400 font-semibold text-lg">{title}</h2>
 				
 			</div>
 			<div className="md:w-[800px] w-[130px] bg-gray-100 rounded-lg px-3 py-[10px] flex items-center gap-2">
-				<SearchOutline color={"#999"} />
+				<IoSearchOutline color={"#999"} />
 				<input
 					type="text"
 					placeholder="Pesquisar"
@@ -35,13 +62,13 @@ const Navbar = () => {
 			</div>
 			<div className="md:flex hidden items-center gap-4">
 				<div className="grid place-items-center bg-gray-100 rounded-full p-2 cursor-pointer">
-					<ShareSocialOutline color={"#444"} />
+					<IoShareSocialOutline color={"#444"} />
 				</div>
 				<div className="grid place-items-center bg-gray-100 rounded-full p-2 cursor-pointer">
-					<SettingsOutline color={"#444"} />
+					<IoSettingsOutline color={"#444"} />
 				</div>
 				<div className="grid place-items-center bg-gray-100 rounded-full p-2 cursor-pointer" onClick={() => navigate("/app/perfil")}>
-					<PersonOutline color={"#444"} />
+					<IoPersonOutline color={"#444"} />
 				</div>
 			</div>
 		</div>

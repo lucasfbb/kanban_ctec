@@ -1,11 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.routes import auth, boards, utils, profile
+from app.routes import auth, boards, utils, profile, task, teams, user
 from app.db.session import Base, engine
 from app.models.board import Board
 from app.models.user import User
 from app.models.task import Task
+from app.models.team import Team
+from app.models.userTeam import UserTeam
 from app.models.tag import Tag
 from app.db.session import Base, engine
 
@@ -30,6 +32,10 @@ Base.metadata.create_all(bind=engine)
 app.include_router(auth.router)
 app.include_router(boards.router)
 app.include_router(profile.router)
+app.include_router(teams.router)
+app.include_router(task.router)
+app.include_router(user.router)
+
 
 
 

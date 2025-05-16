@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getRandomColors } from "../../helpers/getRandomColors";
 import { v4 as uuidv4 } from "uuid";
 
@@ -16,6 +16,11 @@ interface AddModalProps {
 	handleAddTask: (taskData: any) => void;
 }
 
+interface UserOption {
+	id: number;
+	username: string;
+}
+
 const AddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps) => {
 	const initialTaskData = {
 		id: uuidv4(),
@@ -28,8 +33,22 @@ const AddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps) =>
 		tags: [] as Tag[],
 	};
 
+	const [users, setUsers] = useState<UserOption[]>([]);
+	const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
 	const [taskData, setTaskData] = useState(initialTaskData);
 	const [tagTitle, setTagTitle] = useState("");
+
+	useEffect(() => {
+		if (isOpen) {
+			const token = localStorage.getItem("token");
+			fetch("http://localhost:8000/users", {
+				headers: { Authorization: `Bearer ${token}` }
+			})
+				.then((res) => res.json())
+				.then(setUsers)
+				.catch(console.error);
+		}
+	}, [isOpen]);
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -65,8 +84,17 @@ const AddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps) =>
 		setTaskData(initialTaskData);
 	};
 
+	// const handleSubmit = () => {
+	// 	handleAddTask(taskData);
+	// 	closeModal();
+	// };
+
 	const handleSubmit = () => {
-		handleAddTask(taskData);
+		const fullTaskData = {
+			...taskData,
+			assignees: selectedUsers, // IDs
+		};
+		handleAddTask(fullTaskData);
 		closeModal();
 	};
 
@@ -141,6 +169,22 @@ const AddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps) =>
 						</div>
 					))}
 				</div>
+				<select
+					multiple
+					className="w-full h-32 px-2 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm"
+					value={selectedUsers.map(String)}
+					onChange={(e) =>
+						setSelectedUsers(
+							Array.from(e.target.selectedOptions, (option) => Number(option.value))
+						)
+					}
+				>
+					{users.map((user) => (
+						<option key={user.id} value={user.id}>
+							{user.username}
+						</option>
+					))}
+				</select>
 				<div className="w-full flex items-center gap-4 justify-between">
 					<input
 						type="text"

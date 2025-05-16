@@ -59,7 +59,25 @@ const Task = ({ task, provided }: TaskProps) => {
 					}`}
 				></div>
 			</div>
+
+			{task.assignees && task.assignees.length > 0 && (
+				<div className="flex -space-x-2 mt-2">
+					{task.assignees.map((user: any) => (
+					<img
+						key={user.id}
+						src={user.foto ? `http://localhost:8000/${user.foto}` : "/default-avatar.png"}
+						alt={user.username}
+						title={user.username}
+						className="w-8 h-8 rounded-full border-2 border-white shadow"
+					/>
+					))}
+				</div>
+			)}
+
 		</div>
+		
+		
+
 	);
 };
 
