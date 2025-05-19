@@ -22,13 +22,13 @@ def create_team(name: str, db: Session = Depends(get_db)):
     db.refresh(team)
     return team
 
+@router.get("/teams", response_model=List[TeamOut])
+def list_teams(db: Session = Depends(get_db)):
+    return db.query(Team).all()
+
 @router.post("/teams/{team_id}/add-user/{user_id}")
 def add_user_to_team(team_id: int, user_id: int, db: Session = Depends(get_db)):
     link = UserTeam(team_id=team_id, user_id=user_id)
     db.add(link)
     db.commit()
     return {"message": "Usuário adicionado à equipe"}
-
-@router.get("/users/me/teams", response_model=List[TeamOut])
-def get_user_teams(user: User = Depends(get_current_user)):
-    return [ut.team for ut in user.teams]

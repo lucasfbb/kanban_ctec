@@ -7,6 +7,7 @@ import Inicio from "../pages/Inicio";
 import Kanban from "../pages/Kanban";
 import Perfil from "../pages/Perfil";
 import Projetos from "../pages/Projetos";
+import Painel from "../pages/Painel";
 
 const routes: RouteObject[] = [
 	{
@@ -27,6 +28,7 @@ const routes: RouteObject[] = [
 			{ path: "kanban/:id", element: <Boards /> },
 			{ path: "perfil", element: <Perfil /> },
 			{ path: "projetos", element: <Projetos /> },
+			{ path: "painel", element: <Painel /> },
 		],
 	}
   ];

@@ -9,6 +9,7 @@ import {
 	IoNotificationsOutline,
 	IoPeopleOutline,
 	IoPieChartOutline,
+	IoDocumentLockOutline
   } from "react-icons/io5";
 
 import logo from '../../assets/images/logo_pgm_inverter.png';
@@ -54,6 +55,11 @@ const Sidebar = () => {
 			path: "/notificacoes",
 			icon: <IoNotificationsOutline color="#555" width="22px" height="22px" />,
 		},
+		{
+			title: "Painel Admin",
+			path: "/app/painel",
+			icon: <IoDocumentLockOutline  color="#555" width="22px" height="22px" />,
+		}
 	];
 
 	return (

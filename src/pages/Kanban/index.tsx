@@ -27,13 +27,19 @@ const Kanban = () => {
     });
   
     const form = document.createElement("form");
+    form.style.display = "flex";
+    form.style.flexDirection = "column";
+    form.style.alignItems = "center";
+  
     form.innerHTML = `
       <input id="title" placeholder="Título do board" class="swal2-input" required />
-      <select id="privacy" class="swal2-select">
+  
+      <select id="privacy" class="swal2-input" style="margin-top: 10px; cursor: pointer">
         <option value="private">Privado</option>
         <option value="team">Equipe</option>
       </select>
-      <select id="teamSelect" class="swal2-select" style="display:none">
+  
+      <select id="teamSelect" class="swal2-input" style="display: none; margin-top: 10px; width: 50%; cursor: pointer">
         ${teams.data.map((team: any) => `<option value="${team.id}">${team.name}</option>`).join("")}
       </select>
     `;
@@ -85,21 +91,25 @@ const Kanban = () => {
       }
     });
   };
+  
 
   return (
      <div
       className="flex items-center justify-center mt-5"
     >
       <div className="bg-white/90 backdrop-blur-md rounded-xl p-8 shadow-md w-full max-w-3xl mx-4">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-[#333]">Meus Boards</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-[#333]">Meus Boards</h2>
+
+        <div className="flex gap-2 ml-auto">
           <button
             onClick={handleCreateBoard}
-            className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 shadow"
+            className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 shadow cursor-pointer"
           >
             + Novo Board
           </button>
         </div>
+      </div>
 
         <div className="flex flex-col gap-4">
           {boards.map((board) => (
