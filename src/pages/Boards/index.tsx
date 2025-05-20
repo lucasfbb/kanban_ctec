@@ -8,9 +8,10 @@ import AddModal from "../../components/Modals/AddModal";
 import Task from "../../components/Task";
 import api from "../../services/api";
 import { useBoard } from "../../context/BoardContext";
+import { useUnsavedChangesWarning } from "../../hooks/useUnsavedChangesWarning";
 
 const Home = () => {
-  const { state: columns, dispatch } = useBoard();
+  const { state: columns, dispatch, unsavedChanges, setUnsavedChanges, handleSaveBoard } = useBoard();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState("");
   const [title, setTitle] = useState("");
@@ -26,50 +27,89 @@ const Home = () => {
     setModalOpen(false);
   };
 
-  const handleAddTask = (taskData: any) => {
-    dispatch({
-      type: "UPDATE_COLUMN",
-      columnId: selectedColumn,
-      items: [...columns[selectedColumn].items, {
-        ...taskData,
-        assignees: taskData.assignees || []
-      }],
-    });
-  };
-
-  const handleSaveBoard = async () => {
+  const handleAddTask = async (taskData: any) => {
     const token = localStorage.getItem("token");
     const boardId = localStorage.getItem("selectedBoardId");
-    
+  
     if (!token || !boardId) return;
-    
+  
     try {
-      const payload = Object.entries(columns).reduce((acc, [key, value]) => {
-      acc[key] = {
-        name: value.name,
-        items: value.items.map((item: any) => ({
-          title: item.title,
-          description: item.description,
-          deadline: item.deadline,
-          priority: item.priority,
-          status: key,
-          assignees: item.assignees ? item.assignees.map((u: any) => u.id) : [],
-        })),
+      const payload = {
+        board_id: parseInt(boardId),
+        title: taskData.title,
+        description: taskData.description,
+        priority: taskData.priority,
+        deadline: taskData.deadline,
+        image: taskData.image || null,
+        alt: taskData.alt || null,
+        status: selectedColumn,
+        tags: taskData.tags || [],
+        assignee_ids: taskData.assignee_ids || [],
       };
-      return acc;
-      }, {} as any);
-    
-      await api.put(`/boards/${boardId}/save`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+  
+      // console.log("📦 Enviando payload para a API:", payload);
+  
+      const res = await api.post(`/boards/${boardId}/tasks`, payload, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-    
-      console.log("Board salvo com sucesso");
+  
+      dispatch({
+        type: "UPDATE_COLUMN",
+        columnId: selectedColumn,
+        items: [...columns[selectedColumn].items, res.data],
+      });
+
+      setUnsavedChanges(true);
+
     } catch (err) {
-      console.error("Erro ao salvar board:", err);
+      console.error("Erro ao salvar nova task:", err);
     }
   };
+
+  // const handleSaveBoard = async () => {
+  //   const token = localStorage.getItem("token");
+  //   const boardId = localStorage.getItem("selectedBoardId");
+  
+  //   if (!token || !boardId) return;
+  
+  //   try {
+  //     // Gera o payload com as tasks de cada coluna (status)
+  //     const payload = Object.entries(columns).reduce((acc: any, [status, column]: any) => {
+  //       acc[status] = {
+  //         name: column.name,
+  //         items: column.items.map((item: any) => ({
+  //           title: item.title,
+  //           description: item.description,
+  //           deadline: item.deadline,
+  //           priority: item.priority,
+  //           status, // status vem da key do reduce
+  //           assignee_ids: item.assignees?.map((user: any) => user.id) || [],
+  //           tags: item.tags?.map((tag: any) => ({
+  //             title: tag.title,
+  //             color_bg: tag.bg,
+  //             color_text: tag.text,
+  //           })) || [],
+  //           image: item.image || null,
+  //           alt: item.alt || null,
+  //         })),
+  //       };
+  //       return acc;
+  //     }, {});
+  
+  //     // Envia para o backend
+  //     await api.put(`/boards/${boardId}/save`, payload, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+
+  //     setUnsavedChanges(false);
+  
+  //     console.log("✅ Board salvo com sucesso");
+  //   } catch (err) {
+  //     console.error("❌ Erro ao salvar board:", err);
+  //   }
+  // };
 
   // useEffect para buscar o board atual ao montar
   useEffect(() => {
@@ -84,37 +124,33 @@ const Home = () => {
         },
       })
       .then((res) => {
-        console.log(res)
+        // console.log("Dados recebidos:", res.data);
         dispatch({ type: "SET_COLUMNS", payload: res.data.columns });
         setTitle(res.data.board_title);
       })
       .catch((err) => console.error("Erro ao buscar board:", err));
   }, [id, dispatch]);
 
-  // useEffect para salvar automaticamente a cada 10 minutos
   useEffect(() => {
-    const interval = setInterval(() => {
-      handleSaveBoard();
-    }, 10 * 60 * 1000); // 10 minutos
-    
-    return () => clearInterval(interval); // limpa ao desmontar
-  }, [columns]);
-
-  // useEffect para salvar ao sair da tela
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      handleSaveBoard();
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (unsavedChanges) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
     };
-    
+  
     window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [columns]);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [unsavedChanges]);
+
+  useUnsavedChangesWarning(unsavedChanges);
 
   return (
     <>
-      <DragDropContext onDragEnd={(result: any) => onDragEnd(result, columns, dispatch)}>
+      <DragDropContext onDragEnd={(result: any) => {
+        onDragEnd(result, columns, dispatch);
+        setUnsavedChanges(true);
+      }}>
         <div className="w-full flex items-start justify-between px-5 pb-8 md:gap-0 gap-10">
           {Object.entries(columns).map(([columnId, column]: any) => (
             <div key={columnId} className="w-full flex flex-col gap-0">
@@ -152,19 +188,20 @@ const Home = () => {
       </DragDropContext>
 
 	  <div className="flex justify-end px-5 pt-4">
-		<button
-      onClick={handleSaveBoard}
-      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition shadow-md"
-		>
-		Salvar alterações
-		</button>
-  	  </div>
+        <button
+            onClick={handleSaveBoard}
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition shadow-md cursor-pointer"
+          >
+          Salvar alterações
+        </button>
+    </div>
 
       <AddModal
         isOpen={modalOpen}
         onClose={closeModal}
         setOpen={setModalOpen}
         handleAddTask={handleAddTask}
+        selectedColumn={selectedColumn}
       />
     </>
   );

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional
-from .tag import TagCreate
+from .tag import AssigneeOut, TagCreate
 
 class TaskOut(BaseModel):
     id: int
@@ -8,15 +8,15 @@ class TaskOut(BaseModel):
     description: str
     priority: str
     deadline: int
-    image: str | None
-    alt: str | None
+    image: Optional[str]
+    alt: Optional[str]
     status: str
+    assignees: List[AssigneeOut] = []
 
     class Config:
         from_attributes = True
 
 class TaskCreate(BaseModel):
-    board_id: int
     title: str
     description: str
     priority: str
@@ -24,5 +24,4 @@ class TaskCreate(BaseModel):
     image: Optional[str] = None
     alt: Optional[str] = None
     status: str
-    tags: Optional[List[TagCreate]] = []
     assignee_ids: Optional[List[int]] = []

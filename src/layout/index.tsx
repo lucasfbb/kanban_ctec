@@ -2,8 +2,9 @@ import { Navigate, Outlet, useNavigate, useLocation } from "react-router";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { BoardInterface } from "../types/index";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../services/api";
+import { useBoard } from "../context/BoardContext";
 
 const Layout = () => {
 	
@@ -15,6 +16,30 @@ const Layout = () => {
 	} else {
 		// console.log('Token -> ', token)
 	}
+
+	const { unsavedChanges, handleSaveBoard } = useBoard();
+	const previousPath = useRef(location.pathname);
+	
+	useEffect(() => {
+		const from = previousPath.current;
+		const to = location.pathname;
+	
+		const saiuDoKanban = from.startsWith("/app/kanban/") && !to.startsWith("/app/kanban/");
+	
+		if (saiuDoKanban && unsavedChanges) {
+			console.log("💾 Salvando alterações antes de sair do Kanban...");
+	
+			(async () => {
+				try {
+					await handleSaveBoard(); // Aguarda o salvamento terminar
+				} catch (err) {
+					console.error("Erro ao salvar ao sair do Kanban:", err);
+				}
+			})();
+		}
+	
+		previousPath.current = to;
+	}, [location.pathname]);
 
 	// Verifica a rota atual
 	const isKanbanBoard = /^\/app\/kanban\/[^/]+$/.test(location.pathname);

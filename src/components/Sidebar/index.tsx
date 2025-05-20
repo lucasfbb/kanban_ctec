@@ -13,14 +13,25 @@ import {
   } from "react-icons/io5";
 
 import logo from '../../assets/images/logo_pgm_inverter.png';
+import Swal from "sweetalert2";
 
 const Sidebar = () => {
 
 	const location = useLocation();
 	const navigate = useNavigate();
 
-	const handleLogout = () => {
+	const handleLogout = async () => {
 		localStorage.removeItem("token"); // ou o nome que você usou
+
+		await Swal.fire({
+			icon: "success",
+			title: "Logout feito com sucesso",
+			confirmButtonText: "Ok",
+			timerProgressBar: true,
+			timer: 1000
+		});
+
+
 		navigate("/"); // redireciona para login
 	};
 
@@ -73,7 +84,7 @@ const Sidebar = () => {
 			</div>
 			<div className="w-full h-[calc(100vh-70px)] border-r flex flex-col md:items-start items-center gap-2 border-slate-300 bg-[#fff] py-5 md:px-3 px-3 relative">
 				{navLinks.map((link) => {
-					const isActive = location.pathname === link.path;
+					const isActive = location.pathname.startsWith(link.path);
 					return (
 						<div
 							key={link.title}

@@ -9,6 +9,7 @@ import bgImage from "../../assets/images/copacabana.jpg";
 const Kanban = () => {
   const [privateBoards, setPrivateBoards] = useState<BoardInterface[]>([]);
   const [teamBoards, setTeamBoards] = useState<BoardInterface[]>([]);
+  
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -5,14 +5,17 @@ import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import { StyleSheetManager } from "styled-components";
 import { BoardProvider } from "./context/BoardContext.tsx";
+import { UserProvider } from "./context/UserContext.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<Suspense fallback={<div>Carregando...</div>}>
 		<BrowserRouter>
 			<StyleSheetManager shouldForwardProp={(prop) => prop !== "shake"}>
-				<BoardProvider>
-					<App />
-				</BoardProvider>
+				<UserProvider>
+					<BoardProvider>
+						<App />
+					</BoardProvider>
+				</UserProvider>
 			</StyleSheetManager>
 		</BrowserRouter>
 	</Suspense>

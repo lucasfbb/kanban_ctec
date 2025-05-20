@@ -14,6 +14,7 @@ interface AddModalProps {
 	onClose: () => void;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	handleAddTask: (taskData: any) => void;
+	selectedColumn: string;
 }
 
 interface UserOption {
@@ -21,7 +22,7 @@ interface UserOption {
 	username: string;
 }
 
-const AddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps) => {
+const AddModal = ({ isOpen, onClose, setOpen, handleAddTask, selectedColumn }: AddModalProps) => {
 	const initialTaskData = {
 		id: uuidv4(),
 		title: "",
@@ -31,6 +32,7 @@ const AddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps) =>
 		image: "",
 		alt: "",
 		tags: [] as Tag[],
+		status: "", // ← adicionar aqui também
 	};
 
 	const [users, setUsers] = useState<UserOption[]>([]);
@@ -92,7 +94,8 @@ const AddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps) =>
 	const handleSubmit = () => {
 		const fullTaskData = {
 			...taskData,
-			assignees: selectedUsers, // IDs
+			assignee_ids: selectedUsers,
+			status: selectedColumn,
 		};
 		handleAddTask(fullTaskData);
 		closeModal();
@@ -114,7 +117,7 @@ const AddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps) =>
 					name="title"
 					value={taskData.title}
 					onChange={handleChange}
-					placeholder="Title"
+					placeholder="Título"
 					className="w-full h-12 px-3 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm font-medium"
 				/>
 				<input
@@ -122,7 +125,7 @@ const AddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps) =>
 					name="description"
 					value={taskData.description}
 					onChange={handleChange}
-					placeholder="Description"
+					placeholder="Descrição"
 					className="w-full h-12 px-3 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm font-medium"
 				/>
 				<select
@@ -131,31 +134,32 @@ const AddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps) =>
 					value={taskData.priority}
 					className="w-full h-12 px-2 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm"
 				>
-					<option value="">Priority</option>
-					<option value="low">Low</option>
-					<option value="medium">Medium</option>
-					<option value="high">High</option>
+					<option value="">Prioridade</option>
+					<option value="baixa">Baixa</option>
+					<option value="media">Média</option>
+					<option value="alta">Alta</option>
+					<option value="muito_alta">Muito alta</option>
 				</select>
 				<input
 					type="number"
 					name="deadline"
 					value={taskData.deadline}
 					onChange={handleChange}
-					placeholder="Deadline"
+					placeholder="Tempo"
 					className="w-full h-12 px-3 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm"
 				/>
 				<input
 					type="text"
 					value={tagTitle}
 					onChange={(e) => setTagTitle(e.target.value)}
-					placeholder="Tag Title"
+					placeholder="Titulo da Tag"
 					className="w-full h-12 px-3 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm"
 				/>
 				<button
 					className="w-full rounded-md h-9 bg-slate-500 text-amber-50 font-medium"
 					onClick={handleAddTag}
 				>
-					Add Tag
+					Adicionar Tag
 				</button>
 				<div className="w-full">
 					{taskData.tags && <span>Tags:</span>}
@@ -169,22 +173,42 @@ const AddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps) =>
 						</div>
 					))}
 				</div>
-				<select
-					multiple
-					className="w-full h-32 px-2 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm"
-					value={selectedUsers.map(String)}
-					onChange={(e) =>
-						setSelectedUsers(
-							Array.from(e.target.selectedOptions, (option) => Number(option.value))
-						)
-					}
-				>
-					{users.map((user) => (
-						<option key={user.id} value={user.id}>
-							{user.username}
-						</option>
-					))}
-				</select>
+				<div className="w-full mt-2">
+					<label className="text-sm text-gray-600">Responsáveis:</label>
+					<div className="flex flex-col gap-2 mt-1 max-h-40 overflow-y-auto border rounded-md p-2 bg-slate-100">
+						{users.map((user) => (
+							<label key={user.id} className="flex items-center gap-2 text-sm text-gray-800">
+								<input
+								type="checkbox"
+								value={user.id}
+								checked={selectedUsers.includes(user.id)}
+								onChange={() => {
+									setSelectedUsers((prev) =>
+									prev.includes(user.id)
+										? prev.filter((id) => id !== user.id)
+										: [...prev, user.id]
+									);
+								}}
+								/>
+								{user.username}
+							</label>
+						))}
+					</div>
+				</div>
+
+				{selectedUsers.length > 0 && (
+					<div className="w-full mt-2 text-sm text-gray-600">
+						Selecionados:
+						<ul className="list-disc pl-5 text-gray-800">
+						{users
+							.filter((u) => selectedUsers.includes(u.id))
+							.map((u) => (
+							<li key={u.id}>{u.username}</li>
+							))}
+						</ul>
+					</div>
+				)}
+
 				<div className="w-full flex items-center gap-4 justify-between">
 					<input
 						type="text"

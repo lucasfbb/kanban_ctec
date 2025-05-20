@@ -5,8 +5,12 @@ import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import Swal from 'sweetalert2';
 
+import { useUser } from "../../context/UserContext";
+
 const Login = () => {
   const navigate = useNavigate();
+
+  const { setUser } = useUser();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -16,7 +20,15 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const response = await api.post('/login', { username, password });
-      localStorage.setItem('token', response.data.access_token);
+      const token = response.data.access_token;
+      localStorage.setItem('token', token);
+  
+      // 🔥 Buscar dados atualizados do usuário
+      const res = await api.get("/users/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser(res.data); // atualiza contexto com novo usuário
+      console.log(res.data)
       navigate('/app');
     } catch (err) {
       Swal.fire("Erro", "Usuário ou senha inválidos", "error");

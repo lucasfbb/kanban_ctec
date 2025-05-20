@@ -8,6 +8,7 @@ import api from '../../services/api';
 const Register = () => {
   const navigate = useNavigate();
 
+  const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [cargo, setCargo] = useState('');
@@ -17,7 +18,7 @@ const Register = () => {
   const [error, setError] = useState('');
 
   const handleRegister = async () => {
-    if (!username || !password || !confirmPassword || !cargo) {
+    if (!username || !password || !confirmPassword || !cargo || !name) {
         Swal.fire({
           title: 'Campos obrigatórios!',
           text: 'Por favor, preencha todos os campos.',
@@ -32,7 +33,7 @@ const Register = () => {
     }
 
     try {
-      await api.post('/register', { username, password, cargo });
+      await api.post('/register', { name, username, password, cargo });
 
       Swal.fire({
         title: 'Sucesso!',
@@ -61,7 +62,15 @@ const Register = () => {
 
         <input
           type="text"
-          placeholder="Login"
+          placeholder="Nome"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="px-4 py-2 rounded-lg w-64 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder-white text-white" 
+        />
+
+        <input
+          type="text"
+          placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className="px-4 py-2 rounded-lg w-64 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder-white text-white" 

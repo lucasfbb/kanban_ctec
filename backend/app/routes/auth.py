@@ -22,7 +22,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     if db_user:
         raise HTTPException(status_code=400, detail="Usuário já existe")
     
-    new_user = User(username=user.username, password=hash_password(user.password), cargo=user.cargo)
+    new_user = User(name=user.name, username=user.username, password=hash_password(user.password), cargo=user.cargo)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

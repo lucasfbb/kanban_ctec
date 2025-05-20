@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
 	IoChevronDown,
 	IoNotificationsOutline,
@@ -9,11 +10,16 @@ import {
 	IoShareSocialOutline,
 } from "react-icons/io5";
 
-import { useLocation, useNavigate, useParams } from "react-router-dom";
 import api from "../../services/api";
+import { useUser } from "../../context/UserContext";
 
 const Navbar = () => {
+
+	const { user } = useUser();
+
 	const [title, setTitle] = useState("");
+	
+	const foto = user?.foto ? `http://localhost:8000/${user.foto}` : null;
 
 	const { id } = useParams();
 	const location = useLocation();
@@ -38,6 +44,7 @@ const Navbar = () => {
 		} else {
 		  setTitle("");
 		}
+
 	  }, [location.pathname, id]);
 
 	return (
@@ -52,6 +59,7 @@ const Navbar = () => {
 				<h2 className="cursor-pointer bg-transparent outline-none text-orange-400 font-semibold text-lg">{title}</h2>
 				
 			</div>
+
 			<div className="md:w-[800px] w-[130px] bg-gray-100 rounded-lg px-3 py-[10px] flex items-center gap-2">
 				<IoSearchOutline color={"#999"} />
 				<input
@@ -68,7 +76,16 @@ const Navbar = () => {
 					<IoSettingsOutline color={"#444"} />
 				</div>
 				<div className="grid place-items-center bg-gray-100 rounded-full p-2 cursor-pointer" onClick={() => navigate("/app/perfil")}>
-					<IoPersonOutline color={"#444"} />
+					{/* <IoPersonOutline color={"#444"} /> */}
+					{foto ? (
+						<img
+							src={foto}
+							alt="Foto de perfil"
+							className="w-8 h-8 rounded-full object-cover"
+						/>
+					) : (
+						<div>Foto</div>
+					)}
 				</div>
 			</div>
 		</div>

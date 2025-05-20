@@ -2,10 +2,10 @@ import logo from '../../assets/images/riodejaneiro.jpg';
 import { EyeOutline, EyeOffOutline, TrashOutline } from 'react-ionicons';
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import api from '../../services/api';
 import Swal from 'sweetalert2';
 
-import { jwtDecode } from 'jwt-decode';
+import api from '../../services/api';
+import { useUser } from '../../context/UserContext';
 
 interface DecodedToken {
   sub: string;
@@ -14,9 +14,10 @@ interface DecodedToken {
 }
 
 const Painel = () => {
+    
+    const { user } = useUser();
 
     const [teams, setTeams] = useState<any[]>([]);
-
     const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
 
     const navigate = useNavigate();
@@ -30,32 +31,37 @@ const Painel = () => {
         }
 
         try {
-          const decoded = jwtDecode<DecodedToken>(token);
-          if (decoded.cargo !== "admin") {
-            await Swal.fire({
-              icon: "warning",
-              title: "Acesso negado",
-              text: "Você não tem permissão para acessar esta área.",
-              confirmButtonText: "Voltar"
+            const cargo_user =  user?.cargo
+            
+            if (cargo_user == 'admin') {
+                setIsAuthorized(true)
+            } else {
+                await Swal.fire({
+                    icon: "warning",
+                    title: "Acesso negado",
+                    text: "Você não tem permissão para acessar esta área.",
+                    confirmButtonText: "Voltar"
+                });
+                navigate("/app/inicio");
+                setIsAuthorized(false)
+                return;
+            }
+            setIsAuthorized(true);
+
+            // Carrega os times
+            const res = await api.get("/teams", {
+                headers: { Authorization: `Bearer ${token}` }
             });
-            navigate("/app/inicio");
-            return;
-          }
+            setTeams(res.data);
 
-          setIsAuthorized(true);
-
-          // Carrega os times
-          const res = await api.get("/teams", {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          setTeams(res.data);
-        } catch (err) {
-          console.error("Erro ao verificar token:", err);
-          navigate("/login");
-        }
+            } catch (err) {
+                console.error("Erro ao verificar token:", err);
+                navigate("/login");
+            }
       };
 
       verificarPermissao();
+        
     }, []);
 
     // Evita renderizar enquanto não souber se é admin

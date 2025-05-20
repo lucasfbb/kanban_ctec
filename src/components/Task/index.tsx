@@ -47,13 +47,13 @@ const Task = ({ task, provided }: TaskProps) => {
 						width="19px"
 						height="19px"
 					/>
-					<span className="text-[13px] text-gray-700">{deadline} mins</span>
+					<span className="text-[13px] text-gray-700">{deadline} dias</span>
 				</div>
 				<div
 					className={`w-[60px] rounded-full h-[5px] ${
-						priority === "high"
+						priority === "alta"
 							? "bg-red-500"
-							: priority === "medium"
+							: priority === "media"
 							? "bg-orange-500"
 							: "bg-blue-500"
 					}`}

@@ -33,3 +33,10 @@ export interface BoardInterface {
 	id: number;
 	title: string;
 }
+
+export type User = {
+	name: string
+	username: string;
+	cargo: string;
+	foto?: string;
+};
