@@ -22,7 +22,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     if db_user:
         raise HTTPException(status_code=400, detail="Usuário já existe")
     
-    new_user = User(username=user.username, password=hash_password(user.password))
+    new_user = User(username=user.username, password=hash_password(user.password), cargo=user.cargo)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -35,5 +35,5 @@ def login(user: UserLogin, request: Request, db: Session = Depends(get_db)):
     if not db_user or not verify_password(user.password, db_user.password):
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
 
-    token = create_access_token({"sub": db_user.username})
+    token = create_access_token(db_user.username, db_user.cargo)
     return {"access_token": token, "token_type": "bearer"}

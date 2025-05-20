@@ -22,3 +22,8 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     if not user:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
     return user
+
+def get_current_admin(user: User = Depends(get_current_user)) -> User:
+    if user.cargo != "admin":
+        raise HTTPException(status_code=403, detail="Acesso permitido apenas para administradores")
+    return user

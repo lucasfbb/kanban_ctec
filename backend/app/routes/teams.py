@@ -32,3 +32,13 @@ def add_user_to_team(team_id: int, user_id: int, db: Session = Depends(get_db)):
     db.add(link)
     db.commit()
     return {"message": "Usuário adicionado à equipe"}
+
+@router.delete("/teams/{team_id}")
+def delete_team(team_id: int, db: Session = Depends(get_db)):
+    team = db.query(Team).filter(Team.id == team_id).first()
+    if not team:
+        return JSONResponse(status_code=404, content={"message": "Time não encontrado"})
+
+    db.delete(team)
+    db.commit()
+    return {"message": "Time deletado com sucesso"}

@@ -7,11 +7,16 @@ import { BoardInterface } from "../../types";
 import bgImage from "../../assets/images/copacabana.jpg";
 
 const Kanban = () => {
-  const [boards, setBoards] = useState<BoardInterface[]>([]);
+  const [privateBoards, setPrivateBoards] = useState<BoardInterface[]>([]);
+  const [teamBoards, setTeamBoards] = useState<BoardInterface[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get("/boards").then((res) => setBoards(res.data));
+    api.get("/boards").then((res) => {
+      const boards = res.data;
+      setPrivateBoards(boards.filter((b: any) => b.is_private));
+      setTeamBoards(boards.filter((b: any) => !b.is_private));
+    });
   }, []);
 
   const handleBoardClick = (id: number) => {
@@ -83,7 +88,12 @@ const Kanban = () => {
             }
           );
   
-          setBoards((prev) => [...prev, res.data]);
+          if (res.data.is_private) {
+            setPrivateBoards((prev) => [...prev, res.data]);
+          } else {
+            setTeamBoards((prev) => [...prev, res.data]);
+          }
+          
           Swal.fire("Sucesso", "Board criado!", "success");
         } catch (err) {
           Swal.fire("Erro", "Não foi possível criar o board", "error");
@@ -111,7 +121,7 @@ const Kanban = () => {
         </div>
       </div>
 
-        <div className="flex flex-col gap-4">
+        {/* <div className="flex flex-col gap-4">
           {boards.map((board) => (
             <div
               key={board.id}
@@ -121,7 +131,46 @@ const Kanban = () => {
               {board.title}
             </div>
           ))}
+        </div> */}
+
+        <div className="flex flex-col gap-6">
+          {/* Boards Privados */}
+          <div>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">Boards Privados</h3>
+            {privateBoards.length === 0 ? (
+              <p className="text-gray-500 text-sm">Nenhum board privado.</p>
+            ) : (
+              privateBoards.map((board) => (
+                <div
+                  key={board.id}
+                  onClick={() => handleBoardClick(board.id)}
+                  className="p-4 bg-white hover:bg-orange-100 rounded shadow cursor-pointer transition mb-2"
+                >
+                  {board.title}
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Boards de Equipe */}
+          <div>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">Boards de Equipe</h3>
+            {teamBoards.length === 0 ? (
+              <p className="text-gray-500 text-sm">Nenhum board de equipe.</p>
+            ) : (
+              teamBoards.map((board) => (
+                <div
+                  key={board.id}
+                  onClick={() => handleBoardClick(board.id)}
+                  className="p-4 bg-white hover:bg-orange-100 rounded shadow cursor-pointer transition mb-2"
+                >
+                  {board.title}
+                </div>
+              ))
+            )}
+          </div>
         </div>
+
       </div>
     </div>
   );
