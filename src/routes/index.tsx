@@ -8,6 +8,7 @@ import Kanban from "../pages/Kanban";
 import Perfil from "../pages/Perfil";
 import Projetos from "../pages/Projetos";
 import Painel from "../pages/Painel";
+import Prazos from "../pages/Prazos";
 
 const routes: RouteObject[] = [
 	{
@@ -24,6 +25,7 @@ const routes: RouteObject[] = [
 		children: [
 			{ path: "", element: <Navigate to="/app/inicio" /> },
 			{ path: "inicio", element: <Inicio /> },
+			{ path: "prazos", element: <Prazos /> },
 			{ path: "kanban", element: <Kanban /> },            // rota sem ID
 			{ path: "kanban/:id", element: <Boards /> },
 			{ path: "perfil", element: <Perfil /> },

@@ -16,3 +16,4 @@ class User(Base):
     boards = relationship("Board", back_populates="owner")
     assigned_tasks = relationship("Task", secondary=task_assignees, back_populates="assignees")
     teams = relationship("UserTeam", back_populates="user")
+    prazos = relationship("Prazo", back_populates="owner")

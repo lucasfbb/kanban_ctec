@@ -29,7 +29,7 @@ def get_user_teams(db: Session = Depends(get_db), user: User = Depends(get_curre
             "team_name": team.name,
             "members": members
         })
-
+    # print(teams_info)
     return teams_info
 
 

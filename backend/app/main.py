@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.routes import auth, boards, utils, profile, task, teams, user
+from app.routes import auth, boards, utils, profile, task, teams, user, prazo
 from app.db.session import Base, engine
 from app.models.board import Board
 from app.models.user import User
@@ -35,6 +35,7 @@ app.include_router(profile.router)
 app.include_router(teams.router)
 app.include_router(task.router)
 app.include_router(user.router)
+app.include_router(prazo.router)
 
 
 

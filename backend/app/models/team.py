@@ -9,3 +9,4 @@ class Team(Base):
     
     users = relationship("UserTeam", back_populates="team")
     boards = relationship("Board", back_populates="team")
+    prazos = relationship("Prazo", back_populates="team")

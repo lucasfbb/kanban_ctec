@@ -15,6 +15,7 @@ const Kanban = () => {
   useEffect(() => {
     api.get("/boards").then((res) => {
       const boards = res.data;
+      console.log(boards);
       setPrivateBoards(boards.filter((b: any) => b.is_private));
       setTeamBoards(boards.filter((b: any) => !b.is_private));
     });
@@ -31,6 +32,8 @@ const Kanban = () => {
     const teams = await api.get("/users/me/teams", {
       headers: { Authorization: `Bearer ${token}` },
     });
+
+    console.log(teams.data);
   
     const form = document.createElement("form");
     form.style.display = "flex";
@@ -46,7 +49,9 @@ const Kanban = () => {
       </select>
   
       <select id="teamSelect" class="swal2-input" style="display: none; margin-top: 10px; width: 50%; cursor: pointer">
-        ${teams.data.map((team: any) => `<option value="${team.id}">${team.name}</option>`).join("")}
+        ${teams.data
+          .map((team: any) => `<option value="${team.team_id}">${team.team_name}</option>`)
+          .join("")}
       </select>
     `;
   

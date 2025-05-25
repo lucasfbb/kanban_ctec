@@ -9,7 +9,8 @@ import {
 	IoNotificationsOutline,
 	IoPeopleOutline,
 	IoPieChartOutline,
-	IoDocumentLockOutline
+	IoDocumentLockOutline,
+	IoCalendarOutline
   } from "react-icons/io5";
 
 import logo from '../../assets/images/logo_pgm_inverter.png';
@@ -45,6 +46,11 @@ const Sidebar = () => {
 			title: "KanBans",
 			path: "/app/kanban",
 			icon: <IoAppsOutline color="#555" width="22px" height="22px" />,
+		},
+		{
+			title: "Prazos",
+			path: "/app/prazos",
+			icon: <IoCalendarOutline color="#555" width="22px" height="22px" />,
 		},
 		{
 			title: "Projetos",
