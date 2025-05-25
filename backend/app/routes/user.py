@@ -16,20 +16,24 @@ def get_user_teams(db: Session = Depends(get_db), user: User = Depends(get_curre
 
     for user_team in user.teams:
         team = user_team.team
+        if not team:
+            continue  # pula se o time tiver sido deletado
+
         members = [
             {
                 "id": ut.user.id,
                 "username": ut.user.username,
                 "foto": ut.user.foto
             }
-            for ut in team.users  # Aqui team.users é uma lista de UserTeam
+            for ut in team.users if ut.user  # evita erro se o usuário também tiver sido deletado
         ]
+
         teams_info.append({
             "team_id": team.id,
             "team_name": team.name,
             "members": members
         })
-    # print(teams_info)
+
     return teams_info
 
 

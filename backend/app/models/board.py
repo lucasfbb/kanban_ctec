@@ -6,7 +6,7 @@ class Board(Base):
     __tablename__ = "boards"
 
     id = Column(Integer, primary_key=True, index=True)
-    team_id = Column(Integer, ForeignKey("teams.id"), nullable=True)
+    team_id = Column(Integer, ForeignKey("teams.id", ondelete="CASCADE"), nullable=True)
     title = Column(String(100))
     owner_id = Column(Integer, ForeignKey("users.id"))
     is_private = Column(Boolean, default=True)
