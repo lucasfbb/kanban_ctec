@@ -1,6 +1,7 @@
 import { createContext, useReducer, useContext, useEffect, useRef, useState } from "react";
 import { Columns } from "../types";
 import api from "../services/api";
+import Swal from "sweetalert2";
 
 type Action =
   | { type: "SET_COLUMNS"; payload: Columns }
@@ -58,17 +59,22 @@ const BoardContext = createContext<{
   unsavedChanges: boolean;
   setUnsavedChanges: React.Dispatch<React.SetStateAction<boolean>>;
   handleSaveBoard: () => Promise<void>;
+  isPrivate: boolean;
+  setIsPrivate: React.Dispatch<React.SetStateAction<boolean>>;
 }>({
   state: initialState,
   dispatch: () => null,
   unsavedChanges: false,
   setUnsavedChanges: () => null,
   handleSaveBoard: async () => {},
+  isPrivate: true,
+  setIsPrivate: () => null,
 });
 
 export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(boardReducer, initialState);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(true);
 
   const handleSaveBoard = async () => {
     const token = localStorage.getItem("token");
@@ -104,6 +110,7 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
       });
   
       console.log("✅ Board salvo com sucesso");
+      // Swal.fire("Sucesso", "Board criado!", "success");
       setUnsavedChanges(false);
     } catch (err) {
       console.error("❌ Erro ao salvar board:", err);
@@ -111,7 +118,7 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <BoardContext.Provider value={{ state, dispatch, unsavedChanges, setUnsavedChanges, handleSaveBoard }}>
+    <BoardContext.Provider value={{ state, dispatch, unsavedChanges, setUnsavedChanges, handleSaveBoard, isPrivate, setIsPrivate }}>
       {children}
     </BoardContext.Provider>
   );

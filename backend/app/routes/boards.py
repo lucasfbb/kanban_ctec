@@ -150,8 +150,6 @@ def get_board(board_id: int, db: Session = Depends(get_db), user: User = Depends
         "done": {"name": "Feito", "items": []},
     }
 
-
-
     for task in board.tasks:
         # print(f"Assignees para a task '{task.title}':", [(u.id, u.username, u.foto) for u in task.assignees])  # 👈 DEBUG
 
@@ -178,8 +176,7 @@ def get_board(board_id: int, db: Session = Depends(get_db), user: User = Depends
                 ) for u in task.assignees]
             ))
 
-
-    return {"board_title": board.title, "columns": columns}
+    return {"board_title": board.title, "columns": columns, "is_private": board.is_private}
 
 @router.put("/boards/{board_id}/save")
 def save_board(board_id: int, data: dict, db: Session = Depends(get_db), user: User = Depends(get_current_user)):

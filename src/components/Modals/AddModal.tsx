@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { getRandomColors } from "../../helpers/getRandomColors";
 import { v4 as uuidv4 } from "uuid";
+import { useBoard } from "../../context/BoardContext";
 
 interface Tag {
 	title: string;
@@ -40,6 +41,8 @@ const AddModal = ({ isOpen, onClose, setOpen, handleAddTask, selectedColumn }: A
 	const [taskData, setTaskData] = useState(initialTaskData);
 	const [tagTitle, setTagTitle] = useState("");
 
+	const { isPrivate } = useBoard();
+
 	useEffect(() => {
 		if (isOpen) {
 			const token = localStorage.getItem("token");
@@ -50,6 +53,9 @@ const AddModal = ({ isOpen, onClose, setOpen, handleAddTask, selectedColumn }: A
 				.then(setUsers)
 				.catch(console.error);
 		}
+
+		// console.log(isPrivate)
+
 	}, [isOpen]);
 
 	const handleChange = (
@@ -101,11 +107,11 @@ const AddModal = ({ isOpen, onClose, setOpen, handleAddTask, selectedColumn }: A
 		closeModal();
 	};
 
+	
+
 	return (
 		<div
-			className={`w-screen h-screen place-items-center fixed top-0 left-0 ${
-				isOpen ? "grid" : "hidden"
-			}`}
+			className={`fixed inset-0 z-50 grid place-items-center ${isOpen ? "grid" : "hidden"}`}
 		>
 			<div
 				className="w-full h-full bg-black opacity-70 absolute left-0 top-0 z-20"
@@ -142,11 +148,16 @@ const AddModal = ({ isOpen, onClose, setOpen, handleAddTask, selectedColumn }: A
 				</select>
 				<input
 					type="number"
+					id="deadline"
 					name="deadline"
-					value={taskData.deadline}
-					onChange={handleChange}
-					placeholder="Tempo"
+					value={taskData.deadline === 0 ? "" : taskData.deadline}
+					onChange={(e) => {
+					const value = parseInt(e.target.value, 10);
+					setTaskData({ ...taskData, deadline: isNaN(value) ? 0 : value });
+					}}
+					placeholder="Tempo estimado (em dias)"
 					className="w-full h-12 px-3 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm"
+					min={1}
 				/>
 				<input
 					type="text"
@@ -173,28 +184,43 @@ const AddModal = ({ isOpen, onClose, setOpen, handleAddTask, selectedColumn }: A
 						</div>
 					))}
 				</div>
-				<div className="w-full mt-2">
-					<label className="text-sm text-gray-600">Responsáveis:</label>
-					<div className="flex flex-col gap-2 mt-1 max-h-40 overflow-y-auto border rounded-md p-2 bg-slate-100">
+				{!isPrivate && (
+					<div className="w-full mt-2">
+						<label className="text-sm text-gray-600">Responsáveis:</label>
+						<div className="flex flex-col gap-2 mt-1 max-h-40 overflow-y-auto border rounded-md p-2 bg-slate-100">
 						{users.map((user) => (
 							<label key={user.id} className="flex items-center gap-2 text-sm text-gray-800">
-								<input
+							<input
 								type="checkbox"
 								value={user.id}
 								checked={selectedUsers.includes(user.id)}
 								onChange={() => {
-									setSelectedUsers((prev) =>
+								setSelectedUsers((prev) =>
 									prev.includes(user.id)
-										? prev.filter((id) => id !== user.id)
-										: [...prev, user.id]
-									);
+									? prev.filter((id) => id !== user.id)
+									: [...prev, user.id]
+								);
 								}}
-								/>
-								{user.username}
+							/>
+							{user.username}
 							</label>
 						))}
+						</div>
 					</div>
-				</div>
+					)}
+
+					{!isPrivate && selectedUsers.length > 0 && (
+						<div className="w-full mt-2 text-sm text-gray-600">
+							Selecionados:
+							<ul className="list-disc pl-5 text-gray-800">
+							{users
+								.filter((u) => selectedUsers.includes(u.id))
+								.map((u) => (
+								<li key={u.id}>{u.username}</li>
+								))}
+							</ul>
+						</div>
+					)}
 
 				{selectedUsers.length > 0 && (
 					<div className="w-full mt-2 text-sm text-gray-600">
@@ -229,7 +255,7 @@ const AddModal = ({ isOpen, onClose, setOpen, handleAddTask, selectedColumn }: A
 					className="w-full mt-3 rounded-md h-9 bg-orange-400 text-blue-50 font-medium"
 					onClick={handleSubmit}
 				>
-					Submit Task
+					Adicionar tarefa
 				</button>
 			</div>
 		</div>

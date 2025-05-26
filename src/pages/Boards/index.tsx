@@ -11,7 +11,7 @@ import { useBoard } from "../../context/BoardContext";
 import { useUnsavedChangesWarning } from "../../hooks/useUnsavedChangesWarning";
 
 const Home = () => {
-  const { state: columns, dispatch, unsavedChanges, setUnsavedChanges, handleSaveBoard } = useBoard();
+  const { state: columns, dispatch, unsavedChanges, setUnsavedChanges, handleSaveBoard, setIsPrivate } = useBoard();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState("");
   const [title, setTitle] = useState("");
@@ -127,6 +127,7 @@ const Home = () => {
         // console.log("Dados recebidos:", res.data);
         dispatch({ type: "SET_COLUMNS", payload: res.data.columns });
         setTitle(res.data.board_title);
+        setIsPrivate(res.data.is_private);
       })
       .catch((err) => console.error("Erro ao buscar board:", err));
   }, [id, dispatch]);

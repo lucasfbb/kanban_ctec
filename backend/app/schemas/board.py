@@ -15,10 +15,12 @@ class ColumnOut(BaseModel):
 class BoardResponse(BaseModel):
     columns: Dict[str, ColumnOut]
     board_title: str
+    is_private: bool
 
 class BoardOut(BaseModel):
     id: int
     title: str
+    is_private: bool
 
     class Config:
         from_attributes = True

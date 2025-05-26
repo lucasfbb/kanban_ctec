@@ -5,6 +5,7 @@ import api from "../../services/api";
 
 import { BoardInterface } from "../../types";
 import bgImage from "../../assets/images/copacabana.jpg";
+import { useBoard } from "../../context/BoardContext";
 
 const Kanban = () => {
   const [privateBoards, setPrivateBoards] = useState<BoardInterface[]>([]);
@@ -12,10 +13,11 @@ const Kanban = () => {
   
   const navigate = useNavigate();
 
+  const { setIsPrivate } = useBoard();
+
   useEffect(() => {
     api.get("/boards").then((res) => {
       const boards = res.data;
-      console.log(boards);
       setPrivateBoards(boards.filter((b: any) => b.is_private));
       setTeamBoards(boards.filter((b: any) => !b.is_private));
     });
@@ -23,7 +25,6 @@ const Kanban = () => {
 
   const handleBoardClick = (id: number) => {
     localStorage.setItem("selectedBoardId", id.toString());
-    console.log(id)
     navigate(`/app/kanban/${id}`);
   };
 
@@ -32,8 +33,6 @@ const Kanban = () => {
     const teams = await api.get("/users/me/teams", {
       headers: { Authorization: `Bearer ${token}` },
     });
-
-    console.log(teams.data);
   
     const form = document.createElement("form");
     form.style.display = "flex";
@@ -93,6 +92,8 @@ const Kanban = () => {
               },
             }
           );
+
+          setIsPrivate(res.data.is_private);
   
           if (res.data.is_private) {
             setPrivateBoards((prev) => [...prev, res.data]);

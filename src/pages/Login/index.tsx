@@ -28,7 +28,7 @@ const Login = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(res.data); // atualiza contexto com novo usuário
-      console.log(res.data)
+      // console.log(res.data)
       navigate('/app');
     } catch (err) {
       Swal.fire("Erro", "Usuário ou senha inválidos", "error");
